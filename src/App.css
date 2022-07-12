@@ -1,0 +1,40 @@
+button {
+  cursor: pointer;
+}
+
+/* login page */
+.Login {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  height: 100%;
+}
+.intro {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.login_input {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.login_input input,
+button {
+  width: 50%;
+}
+
+/* communitylist */
+
+.CommunityList {
+  display: flex;
+}
+
+/* communityItem */
+.CommunityItem {
+  cursor: pointer;
+  margin: 30px;
+}
+.CommunityItem img {
+  max-width: 200px;
+}
