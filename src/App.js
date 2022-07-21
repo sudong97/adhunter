@@ -9,30 +9,7 @@ import SignUp from "./pages/SignUp";
 import Community from "./pages/Community";
 import Edit_Comu from "./pages/Edit_Comu";
 
-const dummyData = [
-  {
-    id: 1,
-    community_name: "지수그룹",
-    community_picture: "kakao",
-    community_allow: "허용",
-    create_date: 1657593537749,
-  },
-  {
-    id: 2,
-    community_name: "수연그룹",
-    community_picture: "naver",
-    community_allow: "허용",
-    create_date: 1657593537750,
-  },
-  {
-    id: 3,
-    community_name: "지원그룹",
-    community_picture: "uahan",
-    community_allow: "허용",
-    create_date: 1657593537751,
-  },
-];
-
+//community reducer
 const reducer = (state, action) => {
   let newState = [];
   switch (action.type) {
@@ -65,11 +42,47 @@ const reducer = (state, action) => {
 export const CommunityStateContext = React.createContext();
 export const CommunityDispatchContext = React.createContext();
 
+//challenge reducer
+const reducer2 = (state2, action) => {
+  let newState2 = [];
+  switch (action.type) {
+    case "INIT": {
+      return action.data;
+    }
+    case "CREATE": {
+      const newItem = {
+        ...action.data,
+      };
+      newState2 = [...state2, newItem];
+      break;
+    }
+    case "REMOVE": {
+      newState2 = state2.filter((it) => it.id !== action.targetId);
+      break;
+    }
+    case "EDIT": {
+      newState2 = state2.map((it) =>
+        it.id === action.data.id ? { ...action.data } : it
+      );
+      break;
+    }
+    default:
+      return state2;
+  }
+  return newState2;
+};
+
+export const ChanllengeStateContext = React.createContext();
+export const ChanllengeDispatchContext = React.createContext();
+
 function App() {
-  const [data, dispatch] = useReducer(reducer, []);
-  const dataId = useRef(0);
+  const [comu_data, dispatch] = useReducer(reducer, []);
+  const [ch_data, dispatch2] = useReducer(reducer2, []);
+  const comu_dataId = useRef(0);
+  const ch_dataId = useRef(0);
+  //community
   //CREATE
-  const onCreate = (
+  const onCreate_comu = (
     date,
     community_name,
     community_allow,
@@ -78,21 +91,21 @@ function App() {
     dispatch({
       type: "CREATE",
       data: {
-        id: dataId.current,
+        id: comu_dataId.current,
         date: new Date(date).getTime(),
         community_name,
         community_picture,
         community_allow,
       },
     });
-    dataId.current += 1;
+    comu_dataId.current += 1;
   };
   //REMOVE
-  const onRemove = (targetId) => {
+  const onRemove_comu = (targetId) => {
     dispatch({ type: "REMOVE", targetId });
   };
   //EDIT
-  const onEdit = (
+  const onEdit_comu = (
     targetId,
     date,
     community_name,
@@ -111,9 +124,37 @@ function App() {
     });
   };
 
+  //challenge
+  //create
+  const onCreate_ch = (
+    date,
+    community_name,
+    community_allow,
+    community_picture
+  ) => {
+    dispatch({
+      type: "CREATE",
+      data: {
+        id: comu_dataId.current,
+        date: new Date(date).getTime(),
+        community_name,
+        community_picture,
+        community_allow,
+      },
+    });
+    comu_dataId.current += 1;
+  };
+  //edit
+  //remove
+  const onRemove_ch = (targetId) => {
+    dispatch2({ type: "REMOVE", targetId });
+  };
+
   return (
-    <CommunityStateContext.Provider value={data}>
-      <CommunityDispatchContext.Provider value={{ onCreate, onEdit, onRemove }}>
+    <CommunityStateContext.Provider value={comu_data}>
+      <CommunityDispatchContext.Provider
+        value={{ onCreate_comu, onEdit_comu, onRemove_comu }}
+      >
         <BrowserRouter>
           <div className="App">
             <Routes>

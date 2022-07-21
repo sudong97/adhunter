@@ -1,5 +1,6 @@
 import { useState, useRef, useContext } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import CommunityEditor from "../components/CommunityEditor";
 import { CommunityDispatchContext } from "./../App";
 
 const Community_Create = () => {
@@ -13,10 +14,10 @@ const Community_Create = () => {
   const [state, setState] = useState({
     community_name: "",
     community_picture: "",
-    community_allow: "",
+    community_allow: "허용",
   });
 
-  const { onCreate } = useContext(CommunityDispatchContext);
+  const { onCreate_comu } = useContext(CommunityDispatchContext);
   const handleChangeState = (e) => {
     setState({ ...state, [e.target.name]: e.target.value });
   };
@@ -26,7 +27,7 @@ const Community_Create = () => {
       nameRef.current.focus();
       return;
     }
-    onCreate(
+    onCreate_comu(
       date,
       state.community_name,
       state.community_allow,
@@ -38,49 +39,7 @@ const Community_Create = () => {
 
   return (
     <div>
-      <button
-        onClick={() => {
-          navigate(-1);
-        }}
-      >
-        뒤로가기
-      </button>
-      <p>여기는 커뮤니티 생성 페이지입니다.</p>
-      <section>
-        <h4>커뮤니티 이름</h4>
-        <div>
-          <input
-            placeholder="당신의 커뮤니티 이름은 무엇인가요?"
-            ref={nameRef}
-            name="community_name"
-            value={state.community_name}
-            onChange={handleChangeState}
-          />
-        </div>
-      </section>
-      <section>
-        <h4>커뮤니티 사진 등록</h4>
-        <div>
-          <input
-            name="community_picture"
-            value={state.community_picture}
-            onChange={handleChangeState}
-          />
-        </div>
-      </section>
-      <section>
-        <div>
-          <h4>커뮤니티 등록을 위한 결제 허용 여부</h4>
-          <input
-            name="community_allow"
-            value={state.community_allow}
-            onChange={handleChangeState}
-          />
-        </div>
-      </section>
-      <div>
-        <button onClick={handleSubmit}>작성완료</button>
-      </div>
+      <CommunityEditor />
     </div>
   );
 };

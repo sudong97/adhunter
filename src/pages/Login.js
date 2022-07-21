@@ -1,7 +1,15 @@
 import { useState, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
+//api 호출 예제.
 const Login = () => {
+  async function getData() {
+    const rawRes = await fetch(
+      "https://v5hdg0fow7.execute-api.ap-northeast-2.amazonaws.com/Dev/pockets/test"
+    );
+    const jsonRes = await rawRes.json();
+  }
+
   //로그인 정보 처리
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
@@ -57,6 +65,7 @@ const Login = () => {
         >
           회원가입하기
         </button>
+        <button onClick={getData}>api호출</button>
       </div>
     </div>
   );

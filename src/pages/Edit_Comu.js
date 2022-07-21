@@ -1,22 +1,34 @@
 import { useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect, useRef, useContext } from "react";
+
+import CommunityEditor from "../components/CommunityEditor";
+import { CommunityDispatchContext, CommunityStateContext } from "./../App";
 
 const Edit_Comu = () => {
-  const { communityNumber } = useParams();
   const navigate = useNavigate();
-  console.log(communityNumber);
+  const { communityNumber } = useParams();
+
+  const communityList = useContext(CommunityStateContext);
+
+  const [originData, setOriginData] = useState();
+
+  useEffect(() => {
+    if (communityList.length >= 1) {
+      const targetCommunity = communityList.find(
+        (it) => parseInt(it.id) === parseInt(communityNumber)
+      );
+
+      if (targetCommunity) {
+      }
+      setOriginData(targetCommunity);
+    } else {
+      navigate("/CommunityHome", { replace: true });
+    }
+  }, [communityNumber, communityList]);
+
   return (
     <div>
-      <div>
-        <button
-          onClick={() => {
-            navigate(-1);
-            return;
-          }}
-        >
-          수정 취소
-        </button>
-      </div>
-      <div>여기는 커뮤니티{communityNumber} 수정 페이지 입니다.</div>
+      {originData && <CommunityEditor isEdit={true} originData={originData} />}
     </div>
   );
 };
