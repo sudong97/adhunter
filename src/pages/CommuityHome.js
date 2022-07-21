@@ -7,7 +7,7 @@ import CommunityList from "../components/CommunityList";
 const CommunityHome = () => {
   const communityList = useContext(CommunityStateContext);
   const navigate = useNavigate();
-
+  console.log(communityList);
   return (
     <div>
       <button

@@ -8,6 +8,9 @@ import Community_Create from "./pages/Community_Create";
 import SignUp from "./pages/SignUp";
 import Community from "./pages/Community";
 import Edit_Comu from "./pages/Edit_Comu";
+import Challenge_create from "./pages/Challenge_create";
+import Challenge from "./pages/Challenge";
+import Edit_Ch from "./pages/Edit_Ch";
 
 //community reducer
 const reducer = (state, action) => {
@@ -39,30 +42,27 @@ const reducer = (state, action) => {
   return newState;
 };
 
-export const CommunityStateContext = React.createContext();
-export const CommunityDispatchContext = React.createContext();
-
-//challenge reducer
-const reducer2 = (state2, action) => {
+//chanllenge reducer
+const reducer2 = (state2, action2) => {
   let newState2 = [];
-  switch (action.type) {
+  switch (action2.type) {
     case "INIT": {
-      return action.data;
+      return action2.data2;
     }
     case "CREATE": {
-      const newItem = {
-        ...action.data,
+      const newItem2 = {
+        ...action2.data2,
       };
-      newState2 = [...state2, newItem];
+      newState2 = [...state2, newItem2];
       break;
     }
     case "REMOVE": {
-      newState2 = state2.filter((it) => it.id !== action.targetId);
+      newState2 = state2.filter((it) => it.id2 !== action2.targetId2);
       break;
     }
     case "EDIT": {
       newState2 = state2.map((it) =>
-        it.id === action.data.id ? { ...action.data } : it
+        it.id2 === action2.data2.id2 ? { ...action2.data2 } : it
       );
       break;
     }
@@ -71,16 +71,14 @@ const reducer2 = (state2, action) => {
   }
   return newState2;
 };
-
-export const ChanllengeStateContext = React.createContext();
-export const ChanllengeDispatchContext = React.createContext();
-
+export const CommunityStateContext = React.createContext();
+export const ChallengeStateContext = React.createContext();
+export const CommunityDispatchContext = React.createContext();
+export const ChallengeDispatchContext = React.createContext();
 function App() {
-  const [comu_data, dispatch] = useReducer(reducer, []);
-  const [ch_data, dispatch2] = useReducer(reducer2, []);
-  const comu_dataId = useRef(0);
-  const ch_dataId = useRef(0);
-  //community
+  //community reducer
+  const [data, dispatch] = useReducer(reducer, []);
+  const dataId = useRef(0);
   //CREATE
   const onCreate_comu = (
     date,
@@ -91,14 +89,14 @@ function App() {
     dispatch({
       type: "CREATE",
       data: {
-        id: comu_dataId.current,
+        id: dataId.current,
         date: new Date(date).getTime(),
         community_name,
         community_picture,
         community_allow,
       },
     });
-    comu_dataId.current += 1;
+    dataId.current += 1;
   };
   //REMOVE
   const onRemove_comu = (targetId) => {
@@ -124,56 +122,89 @@ function App() {
     });
   };
 
-  //challenge
+  //challenge reducer
+  const [data2, dispatch2] = useReducer(reducer2, []);
+  const dataId2 = useRef(0);
   //create
-  const onCreate_ch = (
-    date,
-    community_name,
-    community_allow,
-    community_picture
-  ) => {
-    dispatch({
+  const onCreate_ch = (id, date2, ch_name, ch_mode) => {
+    dispatch2({
       type: "CREATE",
-      data: {
-        id: comu_dataId.current,
-        date: new Date(date).getTime(),
-        community_name,
-        community_picture,
-        community_allow,
+      data2: {
+        id: id,
+        id2: dataId2.current,
+        date2: new Date(date2).getTime(),
+        ch_name,
+        ch_mode,
       },
     });
-    comu_dataId.current += 1;
+    dataId2.current += 1;
   };
-  //edit
-  //remove
-  const onRemove_ch = (targetId) => {
-    dispatch2({ type: "REMOVE", targetId });
+  //REMOVE
+  const onRemove_ch = (targetId2) => {
+    dispatch({ type: "REMOVE", targetId2 });
   };
-
+  //EDIT
+  const onEdit_ch = (targetId, targetId2, date2, ch_name, ch_mode) => {
+    dispatch2({
+      type: "EDIT",
+      data2: {
+        id: targetId,
+        id2: targetId2,
+        date2: new Date(date2).getTime(),
+        ch_name,
+        ch_mode,
+      },
+    });
+  };
   return (
-    <CommunityStateContext.Provider value={comu_data}>
-      <CommunityDispatchContext.Provider
-        value={{ onCreate_comu, onEdit_comu, onRemove_comu }}
-      >
-        <BrowserRouter>
-          <div className="App">
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/signUp" element={<SignUp />} />
-              <Route path="/communityhome" element={<CommunityHome />} />
-              <Route
-                path="/communityhome/:communityNumber"
-                element={<Community />}
-              />
-              <Route path="/community_create" element={<Community_Create />} />
-              <Route
-                path="/edit_comu/:communityNumber"
-                element={<Edit_Comu />}
-              />
-            </Routes>
-          </div>
-        </BrowserRouter>
-      </CommunityDispatchContext.Provider>
+    <CommunityStateContext.Provider value={data}>
+      <ChallengeStateContext.Provider value={data2}>
+        <CommunityDispatchContext.Provider
+          value={{
+            onCreate_comu,
+            onEdit_comu,
+            onRemove_comu,
+          }}
+        >
+          <ChallengeDispatchContext.Provider
+            value={{ onCreate_ch, onEdit_ch, onRemove_ch }}
+          >
+            <BrowserRouter>
+              <div className="App">
+                <Routes>
+                  <Route path="/" element={<Login />} />
+                  <Route path="/signUp" element={<SignUp />} />
+                  <Route path="/communityhome" element={<CommunityHome />} />
+                  <Route
+                    path="/communityhome/:communityNumber"
+                    element={<Community />}
+                  />
+                  <Route
+                    path="/community_create"
+                    element={<Community_Create />}
+                  />
+                  <Route
+                    path="/challenge_Create/:communityNumber"
+                    element={<Challenge_create />}
+                  />
+                  <Route
+                    path="/edit_comu/:communityNumber"
+                    element={<Edit_Comu />}
+                  />
+                  <Route
+                    path="/Challenge/:challengeNumber"
+                    element={<Challenge />}
+                  />
+                  <Route
+                    path="/Edit_Ch/:challengeNumber"
+                    element={<Edit_Ch />}
+                  />
+                </Routes>
+              </div>
+            </BrowserRouter>
+          </ChallengeDispatchContext.Provider>
+        </CommunityDispatchContext.Provider>
+      </ChallengeStateContext.Provider>
     </CommunityStateContext.Provider>
   );
 }
