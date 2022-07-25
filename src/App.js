@@ -8,6 +8,9 @@ import CommunityList from "./pages/CommunityList";
 import Community from "./pages/Community";
 import Community_Create from "./pages/Community_Create";
 import Community_Edit from "./pages/Community_Edit";
+import Challenge_Create from "./pages/Challenge_Create";
+import Challenge_Edit from "./pages/Challenge_Edit";
+import Challenge from "./pages/Challenge";
 
 //community reducer
 const reducer = (state, action) => {
@@ -38,9 +41,45 @@ const reducer = (state, action) => {
   }
   return newState;
 };
-
+//chanllenge reducer
+const reducer2 = (state2, action2) => {
+  let newState2 = [];
+  switch (action2.type) {
+    case "INIT": {
+      return action2.data2;
+    }
+    case "CREATE": {
+      console.log("hihi2");
+      const newItem2 = {
+        ...action2.data2,
+      };
+      newState2 = [...state2, newItem2];
+      break;
+    }
+    case "REMOVE": {
+      console.log("hihi");
+      console.log(action2);
+      newState2 = state2.filter(
+        (it) => parseInt(it.id2) !== parseInt(action2.targetId2)
+      );
+      break;
+    }
+    case "EDIT": {
+      console.log("hihi3");
+      newState2 = state2.map((it) =>
+        it.id2 === action2.data2.id2 ? { ...action2.data2 } : it
+      );
+      break;
+    }
+    default:
+      return state2;
+  }
+  return newState2;
+};
 export const CommunityStateContext = React.createContext();
+export const ChallengeStateContext = React.createContext();
 export const CommunityDispatchContext = React.createContext();
+export const ChallengeDispatchContext = React.createContext();
 
 const dummyData = [
   {
@@ -102,34 +141,96 @@ const App = () => {
       },
     });
   };
+
+  //challenge reducer
+  const [data2, dispatch2] = useReducer(reducer2, []);
+  const dataId2 = useRef(0);
+  //create
+  const onCreate_ch = (id, date2, challenge_name, challenge_mode) => {
+    dispatch2({
+      type: "CREATE",
+      data2: {
+        id: id,
+        id2: dataId2.current,
+        date2: new Date(date2).getTime(),
+        challenge_name,
+        challenge_mode,
+      },
+    });
+    dataId2.current += 1;
+  };
+  //REMOVE
+  const onRemove_ch = (targetId2) => {
+    dispatch({ type: "REMOVE", targetId2 });
+  };
+  //EDIT
+  const onEdit_ch = (
+    targetId,
+    targetId2,
+    date2,
+    challenge_name,
+    challenge_mode
+  ) => {
+    dispatch2({
+      type: "EDIT",
+      data2: {
+        id: targetId,
+        id2: targetId2,
+        date2: new Date(date2).getTime(),
+        challenge_name,
+        challenge_mode,
+      },
+    });
+  };
   return (
     <CommunityStateContext.Provider value={data}>
-      <CommunityDispatchContext.Provider
-        value={{
-          onCreate_comu,
-          onEdit_comu,
-          onRemove_comu,
-        }}
-      >
-        <BrowserRouter>
-          <div className="App">
-            <Routes>
-              <Route path="/" element={<Login />} />
-              <Route path="/signUp" element={<SignUp />} />
-              <Route path="/communitylist" element={<CommunityList />} />
-              <Route
-                path="/community/:communityNumber"
-                element={<Community />}
-              />
-              <Route path="/community_create" element={<Community_Create />} />
-              <Route
-                path="/community_edit/:communityNumber"
-                element={<Community_Edit />}
-              />
-            </Routes>
-          </div>
-        </BrowserRouter>
-      </CommunityDispatchContext.Provider>
+      <ChallengeStateContext.Provider value={data2}>
+        <CommunityDispatchContext.Provider
+          value={{
+            onCreate_comu,
+            onEdit_comu,
+            onRemove_comu,
+          }}
+        >
+          <ChallengeDispatchContext.Provider
+            value={{ onCreate_ch, onEdit_ch, onRemove_ch }}
+          >
+            <BrowserRouter>
+              <div className="App">
+                <Routes>
+                  <Route path="/" element={<Login />} />
+                  <Route path="/signUp" element={<SignUp />} />
+                  <Route path="/communitylist" element={<CommunityList />} />
+                  <Route
+                    path="/community/:communityNumber"
+                    element={<Community />}
+                  />
+                  <Route
+                    path="/community_create"
+                    element={<Community_Create />}
+                  />
+                  <Route
+                    path="/community_edit/:communityNumber"
+                    element={<Community_Edit />}
+                  />
+                  <Route
+                    path="/challenge_create/:communityNumber"
+                    element={<Challenge_Create />}
+                  />
+                  <Route
+                    path="/challenge_edit/:challengeNumber"
+                    element={<Challenge_Edit />}
+                  />
+                  <Route
+                    path="/challenge/:challengeNumber"
+                    element={<Challenge />}
+                  />
+                </Routes>
+              </div>
+            </BrowserRouter>
+          </ChallengeDispatchContext.Provider>
+        </CommunityDispatchContext.Provider>
+      </ChallengeStateContext.Provider>
     </CommunityStateContext.Provider>
   );
 };

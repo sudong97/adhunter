@@ -26,7 +26,6 @@ const Community_Edit = () => {
 
   return (
     <div>
-      <h2>communityEdit</h2>
       {originData && <CommunityEditor isEdit={true} originData={originData} />}
     </div>
   );
