@@ -3,7 +3,9 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 import { ChallengeDispatchContext } from "./../App";
 function ChallengeEditor({ secData, isEdit }) {
+  console.log("secdata");
   console.log(secData);
+
   const navigate = useNavigate();
   const nameRef = useRef();
   const { communityNumber } = useParams();
@@ -101,7 +103,7 @@ function ChallengeEditor({ secData, isEdit }) {
         <div>
           <button
             onClick={() => {
-              navigate(`/community/${communityNumber}`, { replace: true });
+              navigate(-1);
             }}
           >
             {isEdit ? "수정취소" : "취소하기"}

@@ -13,7 +13,13 @@ function Challenge() {
     <div>
       <Header />
       <div>Challenge 상세 페이지</div>
-
+      <button
+        onClick={() => {
+          navigate(-1);
+        }}
+      >
+        뒤로가기
+      </button>
       <button
         onClick={() => {
           navigate(`/challenge_edit/${challengeNumber}`);

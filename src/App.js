@@ -59,9 +59,7 @@ const reducer2 = (state2, action2) => {
     case "REMOVE": {
       console.log("hihi");
       console.log(action2);
-      newState2 = state2.filter(
-        (it) => parseInt(it.id2) !== parseInt(action2.targetId2)
-      );
+      newState2 = state2.filter((it) => it.id2 !== action2.targetIds);
       break;
     }
     case "EDIT": {
@@ -160,13 +158,13 @@ const App = () => {
     dataId2.current += 1;
   };
   //REMOVE
-  const onRemove_ch = (targetId2) => {
-    dispatch({ type: "REMOVE", targetId2 });
+  const onRemove_ch = (targetIds) => {
+    dispatch({ type: "REMOVE", targetIds });
   };
   //EDIT
   const onEdit_ch = (
     targetId,
-    targetId2,
+    targetIds,
     date2,
     challenge_name,
     challenge_mode
@@ -175,7 +173,7 @@ const App = () => {
       type: "EDIT",
       data2: {
         id: targetId,
-        id2: targetId2,
+        id2: targetIds,
         date2: new Date(date2).getTime(),
         challenge_name,
         challenge_mode,
